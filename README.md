@@ -36,23 +36,82 @@ docker run <sua imagem docker> --url=http://google.com --requests=1000 --concurr
 
 # Executando a aplicação
 
-1. Compilar a imagem
+### Pré-requisitos
+
+- Go (>= 1.25)
+- Docker (opcional)
+
+### Instalando a aplicação localmente
+
+1. Clone o repositório
 
     ```sh
-    docker build -t stress-test .
-    ```
-
-2. Executar a aplicação
-
-    ```sh
-    docker run stress-test:latest --url=http://google.com --requests=1000 --concurrency=10
-    ```
-
-    A saída será algo como:
+    git clone <git@github.com:robsonrg/goexpert-desafio-tecnico-stress-test.git>
     
-    ```shell
-    Tempo Total Execução ........: 5 seg 
-    Total Requests...............: 2 
-    Total Requests HTTP 200......: 0 
-    Total Requests HTTP outros...: 0
+    cd goexpert-desafio-tecnico-stress-test
     ```
+
+### Rodando localmente
+
+1. Compile o projeto
+
+    ```sh
+    go mod download
+    go build -o stresstest ./main.go
+    ```
+
+2. Dê permissão de execução
+
+    ```sh
+    chmod +x ./stresstest
+    ```
+
+2. Execute a aplicação que foi compilada
+    
+    ```sh
+    ./stresstest --url=<$protocol://$host> --requests=<int> --concurrency=<int>
+    ```
+
+    Flags disponíveis
+
+    | Flag          | Descrição                      |
+    |---------------|--------------------------------|
+    | --url         | URL do serviço a ser testado   |
+    | --requests    | Número total de requisições    |
+    | --concurrency | Número de chamadas simultâneas |
+
+    Exemplo
+    ```sh
+    ./stresstest --url=https://google.com --requests=10 --concurrency=5
+    ```
+
+Você também poderá executar localmente, sem compilar o projeto:
+
+```sh
+go run main.go --url=https://google.com --requests=10 --concurrency=5
+```
+
+### Rodando localmente com Docker
+
+1. Compile a imagem
+
+    ```sh
+    docker build -t stresstest .
+    ```
+
+2. Execute a aplicação
+
+    ```sh
+    docker run --rm stresstest:latest --url=http://google.com --requests=100 --concurrency=10
+    ```
+
+### Gerando relatório
+
+A saída da execução da aplicação será um relatório assim:
+    
+```shell
+Tempo Total Execução ........: 7 seg 
+Total Requests...............: 100 
+Total Requests HTTP 200......: 100 
+Total Requests HTTP outros...: 0
+```
